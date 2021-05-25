@@ -12,23 +12,23 @@
 require 'csv'
 
 class EvalScoreCalculator
-  BEGINNER_LEVEL_MAX = 86
-  ADVANCED_LEVEL_MIN = 130
+  ADVANCED_LEVEL_MAX = 86
+  BEGINNER_LEVEL_MIN = 130
 
   csv_file = File.read('./replace_me.csv')
   parsed_csv = CSV.parse(csv_file, :headers => true)
-  headers = ["Applicant Name", "Score", "Placement Level", "Recommend course?"]
+  new_headers = ["Applicant Name", "Score", "Placement Level", "Recommend course?"]
 
   def self.beginner?(eval_score)
-    eval_score <= BEGINNER_LEVEL_MAX
+    eval_score >= BEGINNER_LEVEL_MIN
   end
 
   def self.intermediate?(eval_score)
-    eval_score.between?(BEGINNER_LEVEL_MAX + 1, ADVANCED_LEVEL_MIN - 1)
+    eval_score.between?(ADVANCED_LEVEL_MAX + 1, BEGINNER_LEVEL_MIN - 1)
   end
 
   def self.advanced?(eval_score)
-    eval_score >= ADVANCED_LEVEL_MIN
+    eval_score <= ADVANCED_LEVEL_MAX
   end
 
   def self.find_applicant_placement_level_and_recommend_training?(eval_score)
@@ -60,7 +60,7 @@ class EvalScoreCalculator
   end
 
   CSV.open("digital_literacy_eval_scores.csv", "w") do |csv|
-    csv << headers
+    csv << new_headers
     parsed_csv.each do |row|
       applicant_name = row['First Name'] + " " + row['Last Name']
 
